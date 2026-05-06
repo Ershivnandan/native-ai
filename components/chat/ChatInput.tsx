@@ -1,34 +1,59 @@
-import { View, TextInput, Pressable, Text } from "react-native";
+import { View, TextInput, Pressable, Text, Keyboard } from "react-native";
 import { memo, useState, useCallback, useRef } from "react";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+} from "react-native-reanimated";
 
 interface ChatInputProps {
   onSend: (message: string) => void;
   onStop?: () => void;
   isGenerating: boolean;
+  maxLength?: number;
 }
 
-const MAX_INPUT_LINES = 4;
+const MAX_INPUT_LINES = 5;
 const LINE_HEIGHT = 20;
 const MIN_HEIGHT = 44;
 const MAX_HEIGHT = MIN_HEIGHT + LINE_HEIGHT * (MAX_INPUT_LINES - 1);
+const DEFAULT_MAX_LENGTH = 4000;
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 export const ChatInput = memo(
-  ({ onSend, onStop, isGenerating }: ChatInputProps) => {
+  ({
+    onSend,
+    onStop,
+    isGenerating,
+    maxLength = DEFAULT_MAX_LENGTH,
+  }: ChatInputProps) => {
     const [text, setText] = useState("");
     const [inputHeight, setInputHeight] = useState(MIN_HEIGHT);
     const inputRef = useRef<TextInput>(null);
+    const buttonScale = useSharedValue(1);
 
     const handleSend = useCallback(() => {
       const trimmed = text.trim();
-      if (trimmed.length === 0) return;
+      if (trimmed.length === 0 || isGenerating) return;
       onSend(trimmed);
       setText("");
       setInputHeight(MIN_HEIGHT);
-    }, [text, onSend]);
+      Keyboard.dismiss();
+    }, [text, onSend, isGenerating]);
 
     const handleStop = useCallback(() => {
       onStop?.();
     }, [onStop]);
+
+    const handleChangeText = useCallback(
+      (newText: string) => {
+        if (newText.length <= maxLength) {
+          setText(newText);
+        }
+      },
+      [maxLength],
+    );
 
     const handleContentSizeChange = useCallback(
       (event: { nativeEvent: { contentSize: { height: number } } }) => {
@@ -41,7 +66,20 @@ export const ChatInput = memo(
       [],
     );
 
+    const handlePressIn = useCallback(() => {
+      buttonScale.value = withSpring(0.9, { damping: 15 });
+    }, [buttonScale]);
+
+    const handlePressOut = useCallback(() => {
+      buttonScale.value = withSpring(1, { damping: 15 });
+    }, [buttonScale]);
+
+    const buttonAnimatedStyle = useAnimatedStyle(() => ({
+      transform: [{ scale: buttonScale.value }],
+    }));
+
     const canSend = text.trim().length > 0 && !isGenerating;
+    const isNearLimit = text.length > maxLength * 0.9;
 
     return (
       <View className="border-t border-border-light dark:border-border-dark bg-surface-light dark:bg-surface-dark px-4 py-3">
@@ -53,26 +91,34 @@ export const ChatInput = memo(
             placeholder="Type a message..."
             placeholderTextColor="#9ca3af"
             value={text}
-            onChangeText={setText}
+            onChangeText={handleChangeText}
             onContentSizeChange={handleContentSizeChange}
             multiline
             textAlignVertical="center"
             returnKeyType="default"
             editable={!isGenerating}
+            blurOnSubmit={false}
             accessibilityLabel="Message input"
+            accessibilityHint={`${text.length} of ${maxLength} characters`}
           />
           {isGenerating ? (
-            <Pressable
+            <AnimatedPressable
               onPress={handleStop}
+              onPressIn={handlePressIn}
+              onPressOut={handlePressOut}
+              style={buttonAnimatedStyle}
               className="ml-2 h-9 w-9 items-center justify-center rounded-full bg-red-500 active:bg-red-600"
               accessibilityLabel="Stop generating"
             >
               <View className="h-3 w-3 rounded-sm bg-white" />
-            </Pressable>
+            </AnimatedPressable>
           ) : (
-            <Pressable
+            <AnimatedPressable
               onPress={handleSend}
+              onPressIn={canSend ? handlePressIn : undefined}
+              onPressOut={canSend ? handlePressOut : undefined}
               disabled={!canSend}
+              style={buttonAnimatedStyle}
               className={`ml-2 h-9 w-9 items-center justify-center rounded-full ${
                 canSend
                   ? "bg-primary-500 active:bg-primary-600"
@@ -87,9 +133,14 @@ export const ChatInput = memo(
               >
                 ↑
               </Text>
-            </Pressable>
+            </AnimatedPressable>
           )}
         </View>
+        {isNearLimit && (
+          <Text className="mt-1 text-right text-xs text-gray-400">
+            {text.length}/{maxLength}
+          </Text>
+        )}
       </View>
     );
   },
