@@ -1,4 +1,4 @@
-# MyAI
+# NATIVE AI
 
 A fully offline AI chat application built with React Native and Expo. Runs local LLMs directly on-device using [llama.rn](https://github.com/nicepkg/llama.rn) — no internet required.
 
