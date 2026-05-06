@@ -1,0 +1,45 @@
+name: Staging Build
+
+on:
+  push:
+    branches: [staging]
+
+jobs:
+  build-staging:
+    name: Build Staging APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Install sharp for icon badging
+        run: bun add -d sharp
+
+      - name: Badge app icon with STAGING
+        run: node scripts/badge-icon.js STAGING
+
+      - name: Setup EAS CLI
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Build staging APK
+        run: eas build --platform android --profile staging --non-interactive
+
+      - name: Post build summary
+        run: echo "✅ Staging build triggered successfully" >> $GITHUB_STEP_SUMMARY

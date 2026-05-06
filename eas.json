@@ -5,18 +5,29 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "APP_ENV": "development"
+      }
     },
-    "preview": {
+    "staging": {
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      }
+      },
+      "env": {
+        "APP_ENV": "staging"
+      },
+      "channel": "staging"
     },
     "production": {
       "android": {
         "buildType": "apk"
-      }
+      },
+      "env": {
+        "APP_ENV": "production"
+      },
+      "channel": "production"
     }
   },
   "submit": {
