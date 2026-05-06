@@ -34,21 +34,21 @@ export const classifyError = (error: Error): AIError => {
     };
   }
 
-  if (msg.includes("load") || msg.includes("init")) {
-    return {
-      type: "model_load_failed",
-      message: "Failed to load the model",
-      recoverable: true,
-      suggestion: "Check if the model file exists and is not corrupted",
-    };
-  }
-
   if (msg.includes("not loaded") || msg.includes("no context")) {
     return {
       type: "model_not_loaded",
       message: "No model is loaded",
       recoverable: true,
       suggestion: "Load a model from Settings before chatting",
+    };
+  }
+
+  if (msg.includes("load") || msg.includes("init")) {
+    return {
+      type: "model_load_failed",
+      message: "Failed to load the model",
+      recoverable: true,
+      suggestion: "Check if the model file exists and is not corrupted",
     };
   }
 
