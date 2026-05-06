@@ -12,18 +12,26 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { reduxPersistStorage } from "@/lib/storage/mmkv";
 import settingsReducer from "./settingsSlice";
+import chatReducer from "./chatSlice";
 
-const persistConfig = {
+const rootPersistConfig = {
   key: "root",
   storage: reduxPersistStorage,
-  whitelist: ["settings"],
+  whitelist: ["settings", "chat"],
+};
+
+const chatPersistConfig = {
+  key: "chat",
+  storage: reduxPersistStorage,
+  blacklist: ["isGenerating"],
 };
 
 const rootReducer = combineReducers({
   settings: settingsReducer,
+  chat: persistReducer(chatPersistConfig, chatReducer),
 });
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(rootPersistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
