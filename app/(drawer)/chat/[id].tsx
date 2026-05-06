@@ -3,12 +3,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
 
-interface ChatParams {
-  id: string;
-}
-
 export default function ChatScreen() {
-  const { id } = useLocalSearchParams<ChatParams>();
+  const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
 
   const handleOpenDrawer = () => {
