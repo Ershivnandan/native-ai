@@ -1,9 +1,18 @@
 import { View, Text, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
+import { useTheme } from "@/hooks/useTheme";
+import type { ThemeMode } from "@/types/settings";
+
+const THEME_OPTIONS: { label: string; value: ThemeMode }[] = [
+  { label: "System", value: "system" },
+  { label: "Light", value: "light" },
+  { label: "Dark", value: "dark" },
+];
 
 export default function SettingsScreen() {
   const router = useRouter();
+  const { themeMode, setThemeMode } = useTheme();
 
   const handleGoBack = () => {
     router.back();
@@ -29,14 +38,34 @@ export default function SettingsScreen() {
           <Text className="mb-2 text-sm font-medium uppercase text-gray-500 dark:text-gray-400">
             Appearance
           </Text>
-          <View className="rounded-xl bg-surface-light dark:bg-surface-dark p-4">
-            <View className="flex-row items-center justify-between">
-              <Text className="text-base text-gray-900 dark:text-white">
-                Theme
-              </Text>
-              <Text className="text-sm text-gray-500 dark:text-gray-400">
-                System
-              </Text>
+          <View className="rounded-xl bg-surface-light dark:bg-surface-dark p-1">
+            <View className="flex-row">
+              {THEME_OPTIONS.map((option) => {
+                const isActive = themeMode === option.value;
+                return (
+                  <Pressable
+                    key={option.value}
+                    onPress={() => setThemeMode(option.value)}
+                    className={`flex-1 items-center rounded-lg py-2.5 ${
+                      isActive
+                        ? "bg-primary-500"
+                        : "active:bg-gray-100 dark:active:bg-gray-700"
+                    }`}
+                    accessibilityLabel={`Set theme to ${option.label}`}
+                    accessibilityState={{ selected: isActive }}
+                  >
+                    <Text
+                      className={`text-sm font-medium ${
+                        isActive
+                          ? "text-white"
+                          : "text-gray-700 dark:text-gray-300"
+                      }`}
+                    >
+                      {option.label}
+                    </Text>
+                  </Pressable>
+                );
+              })}
             </View>
           </View>
         </View>
