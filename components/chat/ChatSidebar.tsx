@@ -88,7 +88,7 @@ export const ChatSidebar = memo(
       <View className="flex-1 bg-surface-light dark:bg-surface-dark">
         <View className="border-b border-border-light dark:border-border-dark px-4 py-4">
           <Text className="text-xl font-bold text-gray-900 dark:text-white">
-            MyAI
+            Native AI
           </Text>
           <Text className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Offline AI Assistant

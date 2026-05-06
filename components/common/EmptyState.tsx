@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Text, Pressable, Image } from "react-native";
 import { memo } from "react";
 
 interface EmptyStateProps {
@@ -15,8 +15,14 @@ const SUGGESTIONS = [
 export const EmptyState = memo(({ onSuggestionPress }: EmptyStateProps) => {
   return (
     <View className="flex-1 items-center justify-center px-6">
-      <Text className="text-3xl font-bold text-gray-900 dark:text-white">
-        MyAI
+      <Image
+        source={require("@/assets/nativeaipng.png")}
+        className="h-24 w-24"
+        resizeMode="contain"
+        accessibilityLabel="Native AI logo"
+      />
+      <Text className="mt-4 text-3xl font-bold text-gray-900 dark:text-white">
+        Native AI
       </Text>
       <Text className="mt-2 text-center text-base text-gray-500 dark:text-gray-400">
         Your private, offline AI assistant

@@ -165,7 +165,7 @@ export default function SettingsScreen() {
           </Text>
           <View className="rounded-xl bg-surface-light dark:bg-surface-dark p-4">
             <Text className="text-base text-gray-900 dark:text-white">
-              MyAI v1.0.0
+              Native AI v1.0.0
             </Text>
             <Text className="mt-1 text-sm text-gray-500 dark:text-gray-400">
               Fully offline AI chat assistant powered by llama.rn

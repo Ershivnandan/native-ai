@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "MyAI",
+    "name": "Native AI",
     "slug": "native-ai",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/AppIcon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "scheme": "myai",
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/SplashIcon.png",
       "resizeMode": "contain",
       "backgroundColor": "#0f0f1a"
     },
@@ -19,14 +19,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/AppIcon.png",
         "backgroundColor": "#0f0f1a"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.myai.app"
     },
     "web": {
-      "favicon": "./assets/favicon.png",
+      "favicon": "./assets/AppIcon.png",
       "bundler": "metro"
     },
     "plugins": [
