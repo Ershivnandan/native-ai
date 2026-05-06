@@ -1,46 +1,38 @@
-import { View, Text, Pressable } from "react-native";
+import { View, KeyboardAvoidingView, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useNavigation } from "expo-router";
 import { DrawerActions } from "@react-navigation/native";
+import { useCallback } from "react";
+import { ChatHeader } from "@/components/chat/ChatHeader";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { EmptyState } from "@/components/common/EmptyState";
 
 export default function HomeScreen() {
   const navigation = useNavigation();
 
-  const handleOpenDrawer = () => {
+  const handleMenuPress = useCallback(() => {
     navigation.dispatch(DrawerActions.openDrawer());
-  };
+  }, [navigation]);
+
+  const handleSend = useCallback((_message: string) => {
+    // Will create a new chat and navigate in Phase 5
+  }, []);
+
+  const handleSuggestionPress = useCallback((suggestion: string) => {
+    handleSend(suggestion);
+  }, [handleSend]);
 
   return (
     <SafeAreaView className="flex-1 bg-background-light dark:bg-background-dark">
-      <View className="flex-row items-center border-b border-border-light dark:border-border-dark px-4 py-3">
-        <Pressable
-          onPress={handleOpenDrawer}
-          className="mr-3 rounded-lg p-2 active:bg-gray-100 dark:active:bg-gray-800"
-          accessibilityLabel="Open menu"
-        >
-          <Text className="text-lg text-gray-700 dark:text-gray-200">☰</Text>
-        </Pressable>
-        <Text className="text-lg font-semibold text-gray-900 dark:text-white">
-          New Chat
-        </Text>
-      </View>
-
-      <View className="flex-1 items-center justify-center px-6">
-        <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-          MyAI
-        </Text>
-        <Text className="mt-2 text-center text-base text-gray-500 dark:text-gray-400">
-          Start a conversation with your offline AI assistant
-        </Text>
-        <Pressable
-          className="mt-6 rounded-xl bg-primary-500 px-6 py-3 active:bg-primary-600"
-          accessibilityLabel="Start new chat"
-        >
-          <Text className="text-base font-medium text-white">
-            Start Chatting
-          </Text>
-        </Pressable>
-      </View>
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        keyboardVerticalOffset={0}
+      >
+        <ChatHeader title="New Chat" onMenuPress={handleMenuPress} />
+        <EmptyState onSuggestionPress={handleSuggestionPress} />
+        <ChatInput onSend={handleSend} isGenerating={false} />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
