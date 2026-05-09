@@ -4,9 +4,12 @@ on:
   push:
     branches: [staging]
 
+env:
+  EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+
 jobs:
-  build-staging:
-    name: Build Staging APK
+  android_build:
+    name: Android Staging Build
     runs-on: ubuntu-latest
 
     steps:
@@ -32,14 +35,37 @@ jobs:
       - name: Badge app icon with STAGING
         run: node scripts/badge-icon.js STAGING
 
-      - name: Setup EAS CLI
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Expo and EAS
         uses: expo/expo-github-action@v8
         with:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Build staging APK
-        run: eas build --platform android --profile staging --non-interactive
+      - name: Build Android APK locally
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx4g -Dorg.gradle.workers.max=4"
+        run: |
+          eas build --platform android \
+            --profile staging \
+            --local \
+            --non-interactive \
+            --output android-staging.apk
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: staging-apk
+          path: android-staging.apk
+          retention-days: 14
 
       - name: Post build summary
-        run: echo "✅ Staging build triggered successfully" >> $GITHUB_STEP_SUMMARY
+        run: echo "✅ Staging APK built successfully. Download from artifacts." >> $GITHUB_STEP_SUMMARY

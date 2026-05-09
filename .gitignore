@@ -33,6 +33,9 @@ yarn-error.*
 # local env files
 .env*.local
 
+# Google Service Account (Play Store credentials)
+google-service-account.json
+
 # IDE
 .vscode/
 .idea/

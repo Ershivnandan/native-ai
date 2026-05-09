@@ -1,6 +1,13 @@
-# NATIVE AI
+<p align="center">
+  <img src="assets/nativeaipng.png" alt="Native AI Logo" width="150" />
+</p>
 
-A fully offline AI chat application built with React Native and Expo. Runs local LLMs directly on-device using [llama.rn](https://github.com/nicepkg/llama.rn) — no internet required.
+<h1 align="center">Native AI</h1>
+
+<p align="center">
+  A fully offline AI chat application built with React Native and Expo.<br/>
+  Runs local LLMs directly on-device using <a href="https://github.com/nicepkg/llama.rn">llama.rn</a> — no internet required.
+</p>
 
 ## Features
 
