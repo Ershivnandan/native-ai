@@ -5,6 +5,7 @@ import {
   type ContextParams,
 } from "llama.rn";
 import type { ModelStatus } from "@/types/ai";
+import { ensureDefaultModel } from "@/lib/ai/defaultModel";
 
 type StatusListener = (status: ModelStatus, progress?: number) => void;
 
@@ -12,6 +13,7 @@ let currentContext: LlamaContext | null = null;
 let currentModelPath: string | null = null;
 let statusListeners: StatusListener[] = [];
 let currentStatus: ModelStatus = "idle";
+let inFlightLoad: Promise<LlamaContext> | null = null;
 
 const notifyListeners = (status: ModelStatus, progress?: number) => {
   currentStatus = status;
@@ -34,10 +36,15 @@ export const loadModel = async (modelPath: string): Promise<LlamaContext> => {
     return currentContext;
   }
 
+  if (inFlightLoad && currentModelPath === modelPath) {
+    return inFlightLoad;
+  }
+
   if (currentContext) {
     await unloadModel();
   }
 
+  currentModelPath = modelPath;
   notifyListeners("loading", 0);
 
   const contextParams: ContextParams = {
@@ -51,15 +58,38 @@ export const loadModel = async (modelPath: string): Promise<LlamaContext> => {
     cache_type_v: "q4_0",
   };
 
-  const context = await initLlama(contextParams, (progress) => {
-    notifyListeners("loading", progress);
-  });
+  inFlightLoad = (async () => {
+    try {
+      const context = await initLlama(contextParams, (progress) => {
+        notifyListeners("loading", progress);
+      });
+      currentContext = context;
+      notifyListeners("ready");
+      return context;
+    } catch (err) {
+      currentModelPath = null;
+      notifyListeners("error");
+      throw err;
+    } finally {
+      inFlightLoad = null;
+    }
+  })();
 
-  currentContext = context;
-  currentModelPath = modelPath;
-  notifyListeners("ready");
+  return inFlightLoad;
+};
 
-  return context;
+export const ensureModelLoaded = async (): Promise<{
+  context: LlamaContext;
+  path: string;
+}> => {
+  if (currentContext && currentModelPath) {
+    return { context: currentContext, path: currentModelPath };
+  }
+  const path = currentModelPath ?? (await ensureDefaultModel());
+  const context = inFlightLoad
+    ? await inFlightLoad
+    : await loadModel(path);
+  return { context, path };
 };
 
 export const unloadModel = async (): Promise<void> => {

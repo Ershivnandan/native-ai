@@ -31,7 +31,11 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
+
+# AI model files (too large for git; downloaded/bundled separately)
+*.gguf
 
 # Google Service Account (Play Store credentials)
 google-service-account.json
@@ -48,3 +52,5 @@ google-service-account.json
 # generated native folders
 /ios
 /android
+android
+ios

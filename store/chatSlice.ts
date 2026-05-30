@@ -151,6 +151,8 @@ export const {
   clearChat,
 } = chatSlice.actions;
 
+const EMPTY_MESSAGES: readonly Message[] = Object.freeze([]);
+
 export const selectAllChats = (state: RootState) => state.chat.chats;
 export const selectActiveChatId = (state: RootState) => state.chat.activeChatId;
 export const selectIsGenerating = (state: RootState) => state.chat.isGenerating;
@@ -161,13 +163,15 @@ export const selectActiveChat = createSelector(
 );
 
 export const selectChatById = createSelector(
-  [selectAllChats, (_state: RootState, chatId: string) => chatId],
-  (chats, chatId) => chats.find((c) => c.id === chatId) ?? null,
+  [selectAllChats, (_state: RootState, chatId: string | null) => chatId],
+  (chats, chatId) => (chatId ? chats.find((c) => c.id === chatId) ?? null : null),
 );
 
 export const selectMessagesByChatId = createSelector(
-  [selectAllChats, (_state: RootState, chatId: string) => chatId],
-  (chats, chatId) => chats.find((c) => c.id === chatId)?.messages ?? [],
+  [selectAllChats, (_state: RootState, chatId: string | null) => chatId],
+  (chats, chatId) =>
+    (chatId ? chats.find((c) => c.id === chatId)?.messages : undefined) ??
+    (EMPTY_MESSAGES as Message[]),
 );
 
 export const selectChatsMetadata = createSelector(

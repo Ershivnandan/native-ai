@@ -53,7 +53,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     "expo-web-browser",
     "expo-splash-screen",
     "expo-document-picker",
+    "expo-asset",
+    "./plugins/with-rnllama-source.js",
   ],
+  assetBundlePatterns: ["assets/**/*"],
   extra: {
     appEnv: process.env.APP_ENV ?? "production",
     router: {},

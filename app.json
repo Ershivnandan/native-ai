@@ -33,8 +33,10 @@
       "expo-router",
       "expo-web-browser",
       "expo-splash-screen",
-      "expo-document-picker"
+      "expo-document-picker",
+      "expo-asset"
     ],
+    "assetBundlePatterns": ["assets/**/*"],
     "extra": {
       "router": {},
       "eas": {

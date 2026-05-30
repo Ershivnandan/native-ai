@@ -1,4 +1,5 @@
-import { View } from "react-native";
+import { useEffect } from "react";
+import { colorScheme } from "nativewind";
 import { useTheme } from "@/hooks/useTheme";
 import type { ReactNode } from "react";
 
@@ -7,11 +8,11 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
-  const { isDark } = useTheme();
+  const { themeMode } = useTheme();
 
-  return (
-    <View className={`flex-1 ${isDark ? "dark" : ""}`}>
-      {children}
-    </View>
-  );
+  useEffect(() => {
+    colorScheme.set(themeMode);
+  }, [themeMode]);
+
+  return <>{children}</>;
 };

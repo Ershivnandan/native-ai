@@ -49,12 +49,12 @@ export const useChat = (params?: UseChatParams): UseChatReturn => {
 
   const targetChatId = params?.chatId ?? activeChatId;
 
-  const chat = useAppSelector((state) =>
-    targetChatId ? selectChatById(state, targetChatId) : selectActiveChat(state),
-  );
+  const chatById = useAppSelector((state) => selectChatById(state, targetChatId));
+  const activeChat = useAppSelector(selectActiveChat);
+  const chat = targetChatId ? chatById : activeChat;
 
   const messages = useAppSelector((state) =>
-    targetChatId ? selectMessagesByChatId(state, targetChatId) : [],
+    selectMessagesByChatId(state, targetChatId),
   );
 
   const contextMessages = useMemo(() => {

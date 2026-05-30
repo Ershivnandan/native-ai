@@ -10,4 +10,4 @@ export const DEFAULT_GENERATION_PARAMS: GenerationParams = {
 export const MAX_CONTEXT_LENGTH = 2048;
 
 export const SYSTEM_PROMPT =
-  "You are a helpful AI assistant. Respond concisely and accurately. Use markdown formatting when appropriate.";
+  "You are a helpful AI assistant. Always respond in English unless the user explicitly writes to you in another language. Be concise and accurate. Use markdown formatting when appropriate.";
