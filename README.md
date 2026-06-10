@@ -44,12 +44,15 @@
 ```bash
 # Clone the repo
 git clone <repo-url>
-cd MyAI
+cd native-ai
 
 # Install dependencies
 bun install
 
-# Start development server
+# Install dependencies
+bun prebuild
+
+# Start development server in second tab
 bun run start
 ```
 
@@ -73,11 +76,11 @@ bun run ios
 
 ### Recommended Models
 
-| Model | Size | Quality |
-|-------|------|---------|
-| Phi-3-mini Q4_K_M | ~2.3GB | Good |
-| TinyLlama 1.1B Q4_K_M | ~0.7GB | Basic |
-| Llama-3.2-1B Q4_K_M | ~0.8GB | Good |
+| Model                 | Size   | Quality |
+| --------------------- | ------ | ------- |
+| Phi-3-mini Q4_K_M     | ~2.3GB | Good    |
+| TinyLlama 1.1B Q4_K_M | ~0.7GB | Basic   |
+| Llama-3.2-1B Q4_K_M   | ~0.8GB | Good    |
 
 ## Scripts
 
