@@ -67,5 +67,21 @@ jobs:
           path: android-staging.apk
           retention-days: 14
 
+      - name: Load Play Store service account key
+        run: echo "${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}" | base64 -d > google-service-account.json
+
+      - name: Submit to Play Store internal track
+        run: |
+          eas submit \
+            --platform android \
+            --profile staging \
+            --non-interactive \
+            --no-wait \
+            --path android-staging.apk
+
+      - name: Cleanup credentials
+        if: always()
+        run: rm -f google-service-account.json
+
       - name: Post build summary
-        run: echo "✅ Staging APK built successfully. Download from artifacts." >> $GITHUB_STEP_SUMMARY
+        run: echo "✅ Staging APK built and submitted to Play Store internal track." >> $GITHUB_STEP_SUMMARY
